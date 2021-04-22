@@ -1,0 +1,50 @@
+<html>
+<head>
+    <title>Eth Sign Tests</title>
+    <script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
+</head>
+
+<body>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4">JS Ethereum Signature Example</h1>
+        <p class="lead">Simple signature examples for use with <a href="https://www.metamask.io"> MetaMask </a></p>
+    </div>
+</div>
+<div class="container">
+    <button class="enableEthereumButton">Enable Ethereum</button>
+    <h2>Account: <span class="showAccount"></span></h2>
+    <button class="enableEthereumSign">Enable Ethereum</button>
+</div>
+
+</body>
+
+<!-- <script src="bundle.js"></script> -->
+<script>
+
+    const ethereumButton = document.querySelector('.enableEthereumButton');
+    const enableEthereumSign = document.querySelector('.enableEthereumSign');
+    const showAccount = document.querySelector('.showAccount');
+
+    ethereumButton.addEventListener('click', () => {
+        getAccount();
+    });
+
+    let web3 = new Web3(window.web3.currentProvider);
+    enableEthereumSign.addEventListener('click', () => {
+        console.log(showAccount.innerHTML);
+        web3.eth.personal.sign(web3.utils.utf8ToHex('must sign:123'), showAccount.innerHTML)
+            .then(
+                console.log
+            );
+    });
+
+    async function getAccount() {
+        const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+        const account = accounts[0];
+        showAccount.innerHTML = account;
+    };
+
+</script>
+
+</html>
