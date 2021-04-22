@@ -1,0 +1,21 @@
+{
+    "name": "administrator/metamask_login",
+    "description": "support metamask personal_sign verify",
+    "require": {
+        "kornrunner/keccak": "^1.1",
+        "simplito/elliptic-php": "^1.0",
+        "php": "^7.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "zkoka",
+            "email": "584244756@qq.com"
+        }
+    ],
+    "autoload": {
+      "psr-4": {
+        "zkoka\\": "src"
+      }
+    }
+}
