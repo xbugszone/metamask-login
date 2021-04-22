@@ -1,5 +1,5 @@
 {
-    "name": "administrator/metamask_login",
+    "name": "zkoka/metamask_login",
     "description": "support metamask personal_sign verify",
     "require": {
         "kornrunner/keccak": "^1.1",
