@@ -6,6 +6,10 @@
         "simplito/elliptic-php": "^1.0",
         "php": "^7.0"
     },
+    "keywords": [
+        "metamask",
+        "metamask oauth login",
+    ],
     "license": "MIT",
     "authors": [
         {
