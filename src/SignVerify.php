@@ -35,7 +35,7 @@ class SignVerify
 
         $r = substr($sign, 2, 64);
         $s = substr($sign, 66, 64);
-        $v = substr($sign, -2, 2);
+        $v = (int)substr($sign, -2, 2);
 
         if ($v != ($v & 1)) {
             throw new \InvalidArgumentException('Invalid signature');
