@@ -1,12 +1,11 @@
 # metamask-login
+```php
+$msg = "must sign:123";
+$address = "0x95F64eCd5426e439c177846ac8Aadb1AC7aAE027";
+$sign = '0x6171238faa84cb9b938900acce9ff487a8757da9a906ef89c800c2d38c6240d320b1abe3b087afac8be6ed09db2c8bf19ae9388fbcda8b35f93e766a8abd5f691b';
 
-提供 metamask personal sign 登录验证
+$signVerify = new \lexerom\SignVerify();
+$result = $signVerify->verify($msg, $sign, $address);
+```
 
-1.安装
-
-`composer require lexerom/metamask_login`
-
-2.使用案例请查看 test.php
-
-3.前端测试页面 在 test.html，需要注意的是，你必须先安装 metamask 插件在你的浏览器
-
+See test.html for javascript example using web3.js
