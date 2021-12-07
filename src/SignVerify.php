@@ -45,7 +45,7 @@ class SignVerify
             throw new \InvalidArgumentException('Invalid signature length.');
         }
         $hash = $this->hashPersonalMessage($msg);
-        
+
         $publicKey = $this->secp256k1->recoverPubKey($hash, [
             'r' => $r,
             's' => $s
@@ -113,7 +113,7 @@ class SignVerify
      */
     private function stripZero(string $value): string
     {
-        return preg_replace('/^0x', '', $value);
+        return preg_replace('/^0x/', '', $value);
     }
 
     /**
