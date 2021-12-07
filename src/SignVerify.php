@@ -1,54 +1,42 @@
 <?php
 
-namespace zkoka;
+namespace lexerom;
 
 use Elliptic\EC;
+use Exception;
 use kornrunner\Keccak;
 
 class SignVerify
 {
-    /**
-     * SHA3_NULL_HASH
-     *
-     * @const string
-     */
     const SHA3_NULL_HASH = 'c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470';
 
     /**
-     * secp256k1
-     *
-     * @var \Elliptic\EC
+     * @var EC
      */
-    protected $secp256k1;
+    private $secp256k1;
 
-    /**
-     * construct
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->secp256k1 = new EC('secp256k1');
     }
 
     /**
-     * recoverPublicKey
-     * 验证 sign
      * @param string $msg
      * @param string $sign
-     * @param string $adress
+     * @param string $address
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
-    public function verify(string $msg, string $sign, string $adress)
+    public function verify(string $msg, string $sign, string $address): bool
     {
-
         if (strlen($sign) !== 132) {
             throw new \InvalidArgumentException('Invalid signature length.');
         }
+
         $r = substr($sign, 2, 64);
         $s = substr($sign, 66, 64);
         $v = substr($sign, -2, 2);
+
         if ($v != ($v & 1)) {
             throw new \InvalidArgumentException('Invalid signature');
         }
@@ -57,47 +45,48 @@ class SignVerify
             throw new \InvalidArgumentException('Invalid signature length.');
         }
         $hash = $this->hashPersonalMessage($msg);
-
+        
         $publicKey = $this->secp256k1->recoverPubKey($hash, [
             'r' => $r,
             's' => $s
         ], $v);
         $publicKey = $publicKey->encode('hex');
         $publicAddress = $this->publicKeyToAddress($publicKey);
-        $adress = strtolower($adress);
+        $address = strtolower($address);
         $publicAddress = strtolower($publicAddress);
-        return $publicAddress == $adress;
+
+        return $publicAddress == $address;
     }
 
     /**
-     * recoverPublicKey
-     *
      * @param string $hash
      * @param string $r
      * @param string $s
      * @param int $v
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
-    public function recoverPublicKey(string $hash, string $r, string $s, int $v)
+    private function recoverPublicKey(string $hash, string $r, string $s, int $v): string
     {
-        if ($this->isHex($hash) === false) {
+        if (!$this->isHex($hash)) {
             throw new \InvalidArgumentException('Invalid hash format.');
         }
         $hash = $this->stripZero($hash);
 
-        if ($this->isHex($r) === false || $this->isHex($s) === false) {
+        if (!$this->isHex($r) || !$this->isHex($s)) {
             throw new \InvalidArgumentException('Invalid signature format.');
         }
+
         $r = $this->stripZero($r);
         $s = $this->stripZero($s);
 
         if (strlen($r) !== 64 || strlen($s) !== 64) {
             throw new \InvalidArgumentException('Invalid signature length.');
         }
+
         $publicKey = $this->secp256k1->recoverPubKey($hash, [
             'r' => $r,
-            's' => $s
+            's' => $s,
         ], $v);
         $publicKey = $publicKey->encode('hex');
 
@@ -105,89 +94,64 @@ class SignVerify
     }
 
     /**
-     * sha3
-     * keccak256
+     * Algo: keccak256
      *
      * @param string $value
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
-    public function sha3(string $value)
+    private function sha3(string $value)
     {
         $hash = Keccak::hash($value, 256);
 
-        if ($hash === $this::SHA3_NULL_HASH) {
-            return null;
-        }
-        return $hash;
+        return $hash === self::SHA3_NULL_HASH ? null : $hash;
     }
 
     /**
-     * isZeroPrefixed
-     *
-     * @param string $value
-     * @return bool
-     */
-    public function isZeroPrefixed(string $value)
-    {
-        return (strpos($value, '0x') === 0);
-    }
-
-    /**
-     * stripZero
-     *
      * @param string $value
      * @return string
      */
-    public function stripZero(string $value)
+    private function stripZero(string $value): string
     {
-        if ($this->isZeroPrefixed($value)) {
-            $count = 1;
-            return str_replace('0x', '', $value, $count);
-        }
-        return $value;
+        return preg_replace('/^0x', '', $value);
     }
 
     /**
-     * isHex
-     *
      * @param string $value
      * @return bool
      */
-    public function isHex(string $value)
+    private function isHex(string $value): bool
     {
-        return (is_string($value) && preg_match('/^(0x)?[a-fA-F0-9]+$/', $value) === 1);
+        return preg_match('/^(0x)?[a-fA-F0-9]+$/', $value) === 1;
     }
 
     /**
-     * publicKeyToAddress
-     *
      * @param string $publicKey
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
-    public function publicKeyToAddress(string $publicKey)
+    private function publicKeyToAddress(string $publicKey): string
     {
-        if ($this->isHex($publicKey) === false) {
+        if (!$this->isHex($publicKey)) {
             throw new \InvalidArgumentException('Invalid public key format.');
         }
+
         $publicKey = $this->stripZero($publicKey);
 
         if (strlen($publicKey) !== 130) {
             throw new \InvalidArgumentException('Invalid public key length.');
         }
+
         return '0x' . substr($this->sha3(substr(hex2bin($publicKey), 1)), 24);
     }
 
     /**
-     * privateKeyToPublicKey
-     *
      * @param string $privateKey
      * @return string
      */
-    public function privateKeyToPublicKey(string $privateKey)
+    private function privateKeyToPublicKey(string $privateKey): string
     {
-        if ($this->isHex($privateKey) === false) {
+        if (!$this->isHex($privateKey)) {
             throw new \InvalidArgumentException('Invalid private key format.');
         }
         $privateKey = $this->stripZero($privateKey);
@@ -202,15 +166,14 @@ class SignVerify
     }
 
     /**
-     * hasPersonalMessage
-     *
      * @param string $message
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
-    public function hashPersonalMessage(string $message)
+    private function hashPersonalMessage(string $message): string
     {
         $prefix = sprintf("\x19Ethereum Signed Message:\n%d", mb_strlen($message));
+
         return $this->sha3($prefix . $message);
     }
 }

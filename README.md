@@ -4,7 +4,7 @@
 
 1.安装
 
-`composer require zkoka/metamask_login`
+`composer require lexerom/metamask_login`
 
 2.使用案例请查看 test.php
 

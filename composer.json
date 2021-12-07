@@ -1,6 +1,6 @@
 {
-    "name": "zkoka/metamask_login",
-    "description": "support metamask personal_sign verify",
+    "name": "lexerom/metamask_login",
+    "description": "Support metamask personal_sign verify",
     "require": {
         "kornrunner/keccak": "^1.1",
         "simplito/elliptic-php": "^1.0",
@@ -15,11 +15,15 @@
         {
             "name": "zkoka",
             "email": "584244756@qq.com"
+        },
+        {
+            "name": "Alexey Sukhikh",
+            "email": "lexerom@gmail.com"
         }
     ],
     "autoload": {
       "psr-4": {
-        "zkoka\\": "src"
+        "lexerom\\": "src"
       }
     }
 }
