@@ -41,9 +41,6 @@ class SignVerify
             throw new \InvalidArgumentException('Invalid signature');
         }
 
-        if (strlen($r) !== 64 || strlen($s) !== 64) {
-            throw new \InvalidArgumentException('Invalid signature length.');
-        }
         $hash = $this->hashPersonalMessage($msg);
 
         $publicKey = $this->secp256k1->recoverPubKey($hash, [
