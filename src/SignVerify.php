@@ -35,7 +35,7 @@ class SignVerify
 
         $r = substr($sign, 2, 64);
         $s = substr($sign, 66, 64);
-        $v = (int)substr($sign, -2, 2);
+        $v = ord(hex2bin(substr($sign, 130, 2))) - 27;
 
         if ($v != ($v & 1)) {
             throw new \InvalidArgumentException('Invalid signature');
